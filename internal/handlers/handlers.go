@@ -30,21 +30,12 @@ func (h *Handler) CreateParkingLot(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid input"})
 	}
 
-	if err := h.DB.Create(parkingLot).Error; err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to create parking lot"})
+	if err := parkingLot.Validate(); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 
-	// Create default tariffs for each vehicle type
-	for vehicleType := range parkingLot.Capacity {
-		tariff := &models.Tariff{
-			ParkingLotID: parkingLot.ID,
-			VehicleType:  vehicleType,
-			HourlyRate:   10.0, // Default hourly rate
-			DailyRate:    100.0, // Default daily rate
-		}
-		if err := h.DB.Create(tariff).Error; err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to create default tariff"})
-		}
+	if err := h.DB.Create(parkingLot).Error; err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to create parking lot"})
 	}
 
 	return c.JSON(http.StatusCreated, parkingLot)

@@ -1,0 +1,178 @@
+openapi: 3.0.0
+info:
+  title: Parking Lot Service API
+  version: 1.0.0
+paths:
+  /parking-lots:
+    post:
+      summary: Create a new parking lot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParkingLot'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParkingLot'
+  /parking-lots/{id}:
+    get:
+      summary: Get parking lot details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParkingLot'
+  /parking-lots/{id}/available-spots:
+    get:
+      summary: Get available spots in a parking lot
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: integer
+  /parking-entries:
+    post:
+      summary: Create a new parking entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParkingEntry'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParkingEntry'
+  /parking-entries/{id}/exit:
+    put:
+      summary: Exit a parking spot
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ParkingEntry:
+                    $ref: '#/components/schemas/ParkingEntry'
+                  Receipt:
+                    $ref: '#/components/schemas/Receipt'
+  /tariffs:
+    post:
+      summary: Create a new tariff
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tariff'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tariff'
+
+components:
+  schemas:
+    ParkingLot:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        capacity:
+          type: object
+          additionalProperties:
+            type: integer
+    ParkingEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+        parkingLotID:
+          type: integer
+        vehicleType:
+          type: string
+          enum: [MotorcycleScooter, CarSUV, BusTruck]
+        licensePlate:
+          type: string
+        entryTime:
+          type: string
+          format: date-time
+        exitTime:
+          type: string
+          format: date-time
+          nullable: true
+    Tariff:
+      type: object
+      properties:
+        id:
+          type: integer
+        parkingLotID:
+          type: integer
+        vehicleType:
+          type: string
+          enum: [MotorcycleScooter, CarSUV, BusTruck]
+        baseRate:
+          type: number
+        baseHours:
+          type: integer
+        hourlyRate:
+          type: number
+        dailyRate:
+          type: number
+        dailyRateHours:
+          type: integer
+    Receipt:
+      type: object
+      properties:
+        id:
+          type: integer
+        parkingEntryID:
+          type: integer
+        entryTime:
+          type: string
+          format: date-time
+        exitTime:
+          type: string
+          format: date-time
+        duration:
+          type: string
+        fee:
+          type: number

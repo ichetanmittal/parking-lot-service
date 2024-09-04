@@ -36,7 +36,7 @@ func (s *ParkingService) CalculateParkingFee(entryID uint) (float64, error) {
 	}
 
 	duration := entry.ExitTime.Sub(entry.EntryTime)
-	hours := duration.Hours()
+	hours := math.Ceil(duration.Hours()) // Round up to the nearest hour
 
 	var fee float64
 
@@ -44,17 +44,29 @@ func (s *ParkingService) CalculateParkingFee(entryID uint) (float64, error) {
 	case models.MotorcycleScooter:
 		fee = hours * tariff.HourlyRate
 	case models.CarSUV:
-		if hours <= float64(tariff.BaseHours) {
-			fee = tariff.BaseRate
+		if tariff.BaseHours > 0 && tariff.BaseRate > 0 {
+			// Parking Lot B style: fixed rate for first hour, then hourly rate
+			if hours <= float64(tariff.BaseHours) {
+				fee = tariff.BaseRate
+			} else {
+				fee = tariff.BaseRate + (hours - float64(tariff.BaseHours)) * tariff.HourlyRate
+			}
 		} else {
-			fee = tariff.BaseRate + (hours - float64(tariff.BaseHours)) * tariff.HourlyRate
+			// Parking Lot A style: simple hourly rate
+			fee = hours * tariff.HourlyRate
 		}
 	case models.BusTruck:
-		if hours <= float64(tariff.DailyRateHours) {
-			fee = hours * tariff.HourlyRate
+		if tariff.DailyRateHours > 0 && tariff.DailyRate > 0 {
+			// Parking Lot A style: hourly rate up to a day, then daily rate
+			if hours <= float64(tariff.DailyRateHours) {
+				fee = hours * tariff.HourlyRate
+			} else {
+				days := math.Ceil(hours / 24)
+				fee = float64(tariff.DailyRateHours) * tariff.HourlyRate + (days - 1) * tariff.DailyRate
+			}
 		} else {
-			days := math.Ceil(hours / 24)
-			fee = days * tariff.DailyRate
+			// Parking Lot B style: simple hourly rate
+			fee = hours * tariff.HourlyRate
 		}
 	}
 
