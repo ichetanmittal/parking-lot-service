@@ -5,21 +5,22 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/labstack/echo/v4"
 	"github.com/chetan/parking-lot-service/internal/errors"
 	"github.com/chetan/parking-lot-service/internal/models"
+	"github.com/chetan/parking-lot-service/internal/services"
+	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
 
 type Handler struct {
 	DB             *gorm.DB
-	ParkingService *.ParkingService
+	ParkingService *services.ParkingService
 }
 
 func NewHandler(db *gorm.DB) *Handler {
 	return &Handler{
 		DB:             db,
-		ParkingService: .NewParkingService(db),
+		ParkingService: services.NewParkingService(db),
 	}
 }
 
