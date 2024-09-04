@@ -2,10 +2,16 @@ openapi: 3.0.0
 info:
   title: Parking Lot Service API
   version: 1.0.0
+  description: API for managing parking lots, entries, and tariffs
+
+servers:
+  - url: http://localhost:8080/api/v1
+
 paths:
   /parking-lots:
     post:
       summary: Create a new parking lot
+      operationId: createParkingLot
       requestBody:
         required: true
         content:
@@ -19,9 +25,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ParkingLot'
+
   /parking-lots/{id}:
     get:
       summary: Get parking lot details
+      operationId: getParkingLot
       parameters:
         - name: id
           in: path
@@ -35,9 +43,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ParkingLot'
+
   /parking-lots/{id}/available-spots:
     get:
       summary: Get available spots in a parking lot
+      operationId: getAvailableSpots
       parameters:
         - name: id
           in: path
@@ -53,9 +63,11 @@ paths:
                 type: object
                 additionalProperties:
                   type: integer
+
   /parking-entries:
     post:
       summary: Create a new parking entry
+      operationId: createParkingEntry
       requestBody:
         required: true
         content:
@@ -69,9 +81,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ParkingEntry'
+
   /parking-entries/{id}/exit:
     put:
       summary: Exit a parking spot
+      operationId: exitParking
       parameters:
         - name: id
           in: path
@@ -90,9 +104,11 @@ paths:
                     $ref: '#/components/schemas/ParkingEntry'
                   Receipt:
                     $ref: '#/components/schemas/Receipt'
+
   /tariffs:
     post:
       summary: Create a new tariff
+      operationId: createTariff
       requestBody:
         required: true
         content:
@@ -120,6 +136,10 @@ components:
           type: object
           additionalProperties:
             type: integer
+      required:
+        - name
+        - capacity
+
     ParkingEntry:
       type: object
       properties:
@@ -139,6 +159,11 @@ components:
           type: string
           format: date-time
           nullable: true
+      required:
+        - parkingLotID
+        - vehicleType
+        - licensePlate
+
     Tariff:
       type: object
       properties:
@@ -159,6 +184,11 @@ components:
           type: number
         dailyRateHours:
           type: integer
+      required:
+        - parkingLotID
+        - vehicleType
+        - hourlyRate
+
     Receipt:
       type: object
       properties:
@@ -176,3 +206,8 @@ components:
           type: string
         fee:
           type: number
+      required:
+        - parkingEntryID
+        - entryTime
+        - exitTime
+        - fee

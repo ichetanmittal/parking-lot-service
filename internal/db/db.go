@@ -10,8 +10,13 @@ import (
 )
 
 func ConnectDatabase() *gorm.DB {
+	host := os.Getenv("DB_HOST")
+	if host == "" {
+		host = "host.docker.internal" // Default to Docker host
+	}
+
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		os.Getenv("DB_HOST"),
+		host,
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_NAME"),
