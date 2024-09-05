@@ -88,49 +88,55 @@ func (h *Handler) CreateParkingEntry(c echo.Context) error {
 }
 
 func (h *Handler) ExitParking(c echo.Context) error {
-    id, err := strconv.Atoi(c.Param("id"))
-    if err != nil {
-        return c.JSON(http.StatusBadRequest, map[string]string{"error": errors.ErrInvalidInput.Error()})
-    }
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": errors.ErrInvalidInput.Error()})
+	}
 
-    entry, receipt, err := h.ParkingService.ExitParking(uint(id))
-    if err != nil {
-        switch err {
-        case errors.ErrParkingEntryNotFound:
-            return c.JSON(http.StatusNotFound, map[string]string{"error": err.Error()})
-        case errors.ErrVehicleAlreadyExited:
-            return c.JSON(http.StatusConflict, map[string]string{"error": err.Error()})
-        case errors.ErrTariffNotFound:
-            return c.JSON(http.StatusNotFound, map[string]string{"error": "Tariff not found for this parking lot and vehicle type"})
-        default:
-            return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to process parking exit"})
-        }
-    }
+	entry, receipt, err := h.ParkingService.ExitParking(uint(id))
+	if err != nil {
+		switch err {
+		case errors.ErrParkingEntryNotFound:
+			return c.JSON(http.StatusNotFound, map[string]string{"error": err.Error()})
+		case errors.ErrVehicleAlreadyExited:
+			return c.JSON(http.StatusConflict, map[string]string{"error": err.Error()})
+		case errors.ErrTariffNotFound:
+			return c.JSON(http.StatusNotFound, map[string]string{"error": "Tariff not found for this parking lot and vehicle type"})
+		default:
+			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to process parking exit"})
+		}
+	}
 
-    response := struct {
-        *models.ParkingEntry
-        *models.Receipt
-    }{
-        ParkingEntry: entry,
-        Receipt:      receipt,
-    }
+	response := struct {
+		*models.ParkingEntry
+		*models.Receipt
+	}{
+		ParkingEntry: entry,
+		Receipt:      receipt,
+	}
 
-    return c.JSON(http.StatusOK, response)
+	return c.JSON(http.StatusOK, response)
 }
 
 func (h *Handler) CreateTariff(c echo.Context) error {
-    tariff := new(models.Tariff)
-    if err := c.Bind(tariff); err != nil {
-        return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid input"})
-    }
+	tariff := new(models.Tariff)
+	if err := c.Bind(tariff); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid input"})
+	}
 
-    if err := tariff.Validate(); err != nil {
-        return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
-    }
+	if err := tariff.Validate(); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
 
-    if err := h.DB.Create(tariff).Error; err != nil {
-        return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to create tariff"})
-    }
+	err := h.ParkingService.CreateTariff(tariff)
+	if err != nil {
+		switch err {
+		case errors.ErrParkingLotNotFound:
+			return c.JSON(http.StatusNotFound, map[string]string{"error": "Parking lot not found"})
+		default:
+			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to create tariff"})
+		}
+	}
 
-    return c.JSON(http.StatusCreated, tariff)
+	return c.JSON(http.StatusCreated, tariff)
 }

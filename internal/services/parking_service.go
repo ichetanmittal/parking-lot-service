@@ -157,9 +157,16 @@ func (s *ParkingService) ExitParking(entryID uint) (*models.ParkingEntry, *model
 		Fee:            fee,
 	}
 
-	// if err := s.DB.Create(receipt).Error; err != nil {
-	// 	return nil, nil, err
-	// }
+	// Save the receipt to the database
+	if err := s.DB.Create(receipt).Error; err != nil {
+		return nil, nil, err
+	}
 
 	return &entry, receipt, nil
+}
+
+// Add this method to the ParkingService struct
+func (s *ParkingService) CreateTariff(tariff *models.Tariff) error {
+	// Implement the logic to create a tariff
+	return s.DB.Create(tariff).Error
 }
