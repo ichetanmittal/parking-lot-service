@@ -16,6 +16,9 @@ This project is a Parking Lot Management System implemented in Go. It provides a
 
 ```
 parking-lot-service/
+├── api/
+│   ├── openapi.yaml
+│   └── api.gen.go
 ├── cmd/
 │   └── server/
 │       └── main.go
@@ -38,7 +41,7 @@ parking-lot-service/
 
 ## Prerequisites
 
-- Go 1.16 or later
+- Go 1.23 or later
 - Docker (optional, for containerized deployment)
 - PostgreSQL database
 
@@ -98,7 +101,8 @@ To run the application using Docker:
 - `POST /parking-entries`: Create a new parking entry
 - `PUT /parking-entries/:id/exit`: Process a vehicle exit and generate a receipt
 - `POST /tariffs`: Create a new tariff
-- `GET /receipts/:id`: Get receipt details
+
+For detailed API documentation, refer to the `api/openapi.yaml` file.
 
 ## Models
 
@@ -109,15 +113,15 @@ The system uses the following main models:
 - `Tariff`: Defines the pricing structure for different vehicle types
 - `Receipt`: Generated when a vehicle exits, containing fee details
 
-For detailed model structures, refer to the `models.go` file.
+For detailed model structures, refer to the `api/openapi.yaml` file.
 
 ## Error Handling
 
-Custom errors are defined in the `errors.go` file to handle various scenarios such as invalid input, not found errors, and business logic errors.
+Custom errors are defined in the `internal/errors/errors.go` file to handle various scenarios such as invalid input, not found errors, and business logic errors.
 
 ## Database
 
-The system uses PostgreSQL as the database. Connection and migrations are handled in the `db.go` file.
+The system uses PostgreSQL as the database. Connection and migrations are handled in the `internal/db/db.go` file.
 
 ## Contributing
 
