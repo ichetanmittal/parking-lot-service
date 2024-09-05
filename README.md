@@ -12,76 +12,51 @@ This project is a Parking Lot Management System implemented in Go. It provides a
 - Generate receipts for parking sessions
 - RESTful API for easy integration
 
-## Project Structure
+## Technology Stack
 
-```
-parking-lot-service/
-├── api/
-│   ├── openapi.yaml
-│   └── api.gen.go
-├── cmd/
-│   └── server/
-│       └── main.go
-├── internal/
-│   ├── db/
-│   │   └── db.go
-│   ├── errors/
-│   │   └── errors.go
-│   ├── handlers/
-│   │   └── handlers.go
-│   ├── models/
-│   │   └── models.go
-│   └── services/
-│       └── parking_service.go
-├── Dockerfile
-├── go.mod
-├── go.sum
-└── README.md
-```
+- Go 1.23
+- Echo framework for HTTP routing
+- GORM for database operations
+- PostgreSQL as the database
+- Docker for containerization
 
-## Prerequisites
+## API Documentation
+
+The API is documented using OpenAPI 3.0 specification. You can find the full API documentation in the `api/openapi.yaml` file.
+
+## Getting Started
+
+### Prerequisites
 
 - Go 1.23 or later
-- Docker (optional, for containerized deployment)
-- PostgreSQL database
+- PostgreSQL
+- Docker (optional)
 
-## Setup
+### Environment Variables
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/chetan/parking-lot-service.git
-   cd parking-lot-service
-   ```
+Create a `.env` file in the root directory with the following variables:
 
-2. Set up environment variables:
-   Create a `.env` file in the root directory with the following content:
-   ```
-   DB_HOST=localhost
-   DB_USER=your_db_user
-   DB_PASSWORD=your_db_password
-   DB_NAME=parking_system
-   DB_PORT=5432
-   PORT=8080
-   ```
+```
+DB_HOST=localhost
+DB_USER=your_db_user
+DB_PASSWORD=your_db_password
+DB_NAME=parking_system
+DB_PORT=5432
+PORT=8080
+```
 
-3. Install dependencies:
-   ```
-   go mod download
-   ```
+### Running the Application
 
-4. Build the application:
-   ```
-   go build -o parking-service ./cmd/server
-   ```
+1. Clone the repository
+2. Set up the environment variables
+3. Run the following commands:
 
-5. Run the application:
-   ```
-   ./parking-service
-   ```
+```bash
+go mod download
+go run cmd/server/main.go
+```
 
-## Docker Deployment
-
-To run the application using Docker:
+### Running with Docker
 
 1. Build the Docker image:
    ```
