@@ -12,11 +12,13 @@ import (
 	"gorm.io/gorm"
 )
 
+// Handler struct holds dependencies for the HTTP handlers
 type Handler struct {
 	DB             *gorm.DB
 	ParkingService *services.ParkingService
 }
 
+// NewHandler creates a new Handler instance with the given database connection
 func NewHandler(db *gorm.DB) *Handler {
 	return &Handler{
 		DB:             db,
@@ -24,6 +26,7 @@ func NewHandler(db *gorm.DB) *Handler {
 	}
 }
 
+// CreateParkingLot handles the creation of a new parking lot
 func (h *Handler) CreateParkingLot(c echo.Context) error {
 	parkingLot := new(models.ParkingLot)
 	if err := c.Bind(parkingLot); err != nil {
@@ -41,6 +44,7 @@ func (h *Handler) CreateParkingLot(c echo.Context) error {
 	return c.JSON(http.StatusCreated, parkingLot)
 }
 
+// GetParkingLot retrieves details of a specific parking lot
 func (h *Handler) GetParkingLot(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 	parkingLot := new(models.ParkingLot)
@@ -52,6 +56,7 @@ func (h *Handler) GetParkingLot(c echo.Context) error {
 	return c.JSON(http.StatusOK, parkingLot)
 }
 
+// GetAvailableSpots retrieves the number of available spots for each vehicle type in a parking lot
 func (h *Handler) GetAvailableSpots(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -67,6 +72,7 @@ func (h *Handler) GetAvailableSpots(c echo.Context) error {
 	return c.JSON(http.StatusOK, availableSpots)
 }
 
+// CreateParkingEntry handles the creation of a new parking entry
 func (h *Handler) CreateParkingEntry(c echo.Context) error {
 	entry := new(models.ParkingEntry)
 	if err := c.Bind(entry); err != nil {
@@ -87,6 +93,7 @@ func (h *Handler) CreateParkingEntry(c echo.Context) error {
 	return c.JSON(http.StatusCreated, entry)
 }
 
+// ExitParking handles the process of a vehicle exiting the parking lot
 func (h *Handler) ExitParking(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -118,6 +125,7 @@ func (h *Handler) ExitParking(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 }
 
+// CreateTariff handles the creation of a new tariff
 func (h *Handler) CreateTariff(c echo.Context) error {
 	tariff := new(models.Tariff)
 	if err := c.Bind(tariff); err != nil {

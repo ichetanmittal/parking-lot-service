@@ -5,7 +5,7 @@ info:
   description: API for managing parking lots, entries, and tariffs
 
 servers:
-  - url: http://localhost:8080/api/v1
+  - url: http://localhost:8080
 
 paths:
   /parking-lots:
@@ -17,7 +17,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ParkingLot'
+              $ref: '#/components/schemas/ParkingLotInput'
       responses:
         '201':
           description: Created
@@ -73,7 +73,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ParkingEntry'
+              $ref: '#/components/schemas/ParkingEntryInput'
       responses:
         '201':
           description: Created
@@ -114,7 +114,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Tariff'
+              $ref: '#/components/schemas/TariffInput'
       responses:
         '201':
           description: Created
@@ -125,6 +125,19 @@ paths:
 
 components:
   schemas:
+    ParkingLotInput:
+      type: object
+      properties:
+        name:
+          type: string
+        capacity:
+          type: object
+          additionalProperties:
+            type: integer
+      required:
+        - name
+        - capacity
+
     ParkingLot:
       type: object
       properties:
@@ -137,8 +150,24 @@ components:
           additionalProperties:
             type: integer
       required:
+        - id
         - name
         - capacity
+
+    ParkingEntryInput:
+      type: object
+      properties:
+        parkingLotID:
+          type: integer
+        vehicleType:
+          type: string
+          enum: [MotorcycleScooter, CarSUV, BusTruck]
+        licensePlate:
+          type: string
+      required:
+        - parkingLotID
+        - vehicleType
+        - licensePlate
 
     ParkingEntry:
       type: object
@@ -160,9 +189,38 @@ components:
           format: date-time
           nullable: true
       required:
+        - id
         - parkingLotID
         - vehicleType
         - licensePlate
+        - entryTime
+
+    TariffInput:
+      type: object
+      properties:
+        parkingLotID:
+          type: integer
+        vehicleType:
+          type: string
+          enum: [MotorcycleScooter, CarSUV, BusTruck]
+        baseRate:
+          type: number
+        baseHours:
+          type: integer
+        hourlyRate:
+          type: number
+        dailyRate:
+          type: number
+        dailyRateHours:
+          type: integer
+      required:
+        - parkingLotID
+        - vehicleType
+        - baseRate
+        - baseHours
+        - hourlyRate
+        - dailyRate
+        - dailyRateHours
 
     Tariff:
       type: object
@@ -185,9 +243,14 @@ components:
         dailyRateHours:
           type: integer
       required:
+        - id
         - parkingLotID
         - vehicleType
+        - baseRate
+        - baseHours
         - hourlyRate
+        - dailyRate
+        - dailyRateHours
 
     Receipt:
       type: object
@@ -207,7 +270,9 @@ components:
         fee:
           type: number
       required:
+        - id
         - parkingEntryID
         - entryTime
         - exitTime
+        - duration
         - fee
