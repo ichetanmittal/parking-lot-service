@@ -1,0 +1,31 @@
+organization: xaults
+
+extends:
+  - recommended
+
+apis:
+  core@v2:
+    root: ./api/openapi.yml
+    rules:
+      no-ambiguous-paths: error
+  external@v1:
+    root: ./api/openapi.yml
+    labels:
+      - external
+    theme:
+      openapi:
+        hideLogo: false
+
+theme:
+  openapi:
+    schemaExpansionLevel: 2
+    sortTagsAlphabetically: true
+    generateCodeSamples:
+      languages:
+        - lang: curl
+        - lang: Go
+    features:
+      colors:
+        primary:
+          main: '#ff0000'
+       
