@@ -1,0 +1,165 @@
+{
+	"info": {
+		"_postman_id": "87097310-4dd2-4fa2-b095-c4026aa795da",
+		"name": "Parking-lot",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29002158"
+	},
+	"item": [
+		{
+			"name": "parking-lots",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"ABCD\",\n    \"capacity\": {\n        \"MotorcycleScooter\": 50,\n        \"CarSUV\": 100,\n        \"BusTruck\": 20\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/parking-lots",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"parking-lots"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "tariffs",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"parkingLotID\": 11,\n  \"vehicleType\": \"CarSUV\",\n  \"baseRate\": 5.00,\n  \"baseHours\": 2,\n  \"hourlyRate\": 2.50,\n  \"dailyRate\": 25.00,\n  \"dailyRateHours\": 10\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/tariffs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"tariffs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "available-spots",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/parking-lots/11/available-spots",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"parking-lots",
+						"11",
+						"available-spots"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "parking-lots",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/parking-lots/11",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"parking-lots",
+						"11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "parking-entry",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"parkingLotID\": 11,\n  \"vehicleType\": \"CarSUV\",\n  \"licensePlate\": \"ABC123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/parking-entries",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"parking-entries"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "parking-exit",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/parking-entries/12/exit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"parking-entries",
+						"12",
+						"exit"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
